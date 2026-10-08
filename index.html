@@ -3,88 +3,110 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#130f26">
 <title>Bongkar Source</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Bricolage+Grotesque:wght@500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Sora:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#12161f; --panel:#1a2030; --code:#0d1119; --line:#2a3246;
-  --text:#e8ecf4; --mute:#8d97ad; --acc:#ffb547; --acc-ink:#2a1a00;
-  --html:#ff7a59; --css:#5aa9ff; --js:#f5d547; --err:#ff6b81;
-  --sans:'Bricolage Grotesque',system-ui,sans-serif;
-  --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
-}
-@media (prefers-color-scheme:light){
-  :root{--bg:#f4f1ea;--panel:#fff;--code:#fbfaf7;--line:#ddd6c6;--text:#1c2030;--mute:#6b7186;--acc:#c46a00;--acc-ink:#fff;--html:#d9482a;--css:#1f6fd1;--js:#a07d00;--err:#c0213d}
+  --bg:#130f26; --panel:#1b1635; --panel2:#231d44; --code:#0f0b20; --line:#32295e;
+  --text:#f1edff; --mute:#9d95c9; --acc:#ff6b9a; --acc-ink:#2b0716; --err:#ff8a8a;
+  --c-html:#ff6b9a; --c-css:#6ec8ff; --c-js:#ffc66d;
+  --t-tag:#ff6b9a; --t-attr:#ffc66d; --t-str:#8ef0b0; --t-com:#6f679c;
+  --t-key:#b79cff; --t-num:#ffa56b; --t-fn:#6ec8ff; --t-pun:#8a82b8;
+  --sans:'Sora',system-ui,sans-serif;
+  --mono:'Fira Code',ui-monospace,Menlo,Consolas,monospace;
 }
 *{box-sizing:border-box}
-html{scroll-padding-top:12px}
-body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 var(--sans);min-height:100vh}
-.wrap{max-width:1100px;margin:0 auto;padding:28px 16px 48px}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 var(--sans);min-height:100vh}
+.wrap{max-width:1080px;margin:0 auto;padding:36px 16px 56px}
 
-h1{font-size:clamp(1.9rem,6vw,3rem);line-height:1;margin:0 0 8px;font-weight:800;letter-spacing:-.03em}
-.lead{color:var(--mute);margin:0 0 22px;max-width:46ch}
+/* Hero */
+.brand{font:500 13px var(--mono);color:var(--acc);margin:0 0 14px}
+h1{font-size:clamp(2.4rem,9vw,4.6rem);line-height:.95;margin:0 0 14px;font-weight:800;letter-spacing:-.045em}
+.lead{color:var(--mute);margin:0 0 28px;max-width:42ch;font-size:15px}
 
-form{display:flex;gap:0;border:1.5px solid var(--line);border-radius:12px;background:var(--panel);overflow:hidden}
+/* Input */
+form{display:flex;align-items:stretch;background:var(--panel);border:1.5px solid var(--line);border-radius:16px;padding:6px;gap:6px;transition:border-color .2s}
 form:focus-within{border-color:var(--acc)}
-form input{flex:1;min-width:0;border:0;background:transparent;color:var(--text);padding:15px 16px;font:500 15px var(--mono);outline:0}
-form input::placeholder{color:var(--mute)}
-form button{border:0;background:var(--acc);color:var(--acc-ink);font:700 15px var(--sans);padding:0 22px;cursor:pointer}
-form button:disabled{opacity:.6;cursor:wait}
-form button:focus-visible{outline:2px solid var(--text);outline-offset:-4px}
+.glyph{display:grid;place-items:center;padding:0 4px 0 12px;color:var(--acc);font:500 14px var(--mono)}
+form input{flex:1;min-width:0;border:0;background:transparent;color:var(--text);padding:14px 4px;font:400 15px var(--mono);outline:0}
+form input::placeholder{color:#5f5890}
+#go{border:0;border-radius:11px;background:var(--acc);color:var(--acc-ink);font:600 15px var(--sans);padding:0 22px;cursor:pointer}
+#go:disabled{opacity:.55;cursor:wait}
+#go:focus-visible,.tab:focus-visible,.chip:focus-visible,.btn:focus-visible{outline:2px solid var(--text);outline-offset:2px}
 
-#status{min-height:24px;margin:12px 2px;font-size:13.5px;color:var(--mute);display:flex;align-items:center;gap:8px}
+.progress{height:3px;background:transparent;margin:10px 4px 0;border-radius:3px;overflow:hidden}
+.progress i{display:block;height:100%;width:0;background:var(--acc);transition:width .25s}
+#status{min-height:26px;margin:8px 4px 18px;font-size:13px;color:var(--mute)}
 #status.err{color:var(--err)}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--acc);animation:p 1s infinite}
-@keyframes p{50%{opacity:.25}}
-@media (prefers-reduced-motion:reduce){.dot{animation:none}}
 
+/* Result */
 #result{display:none}
-#result.on{display:block}
+#result.on{display:block;animation:rise .45s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){#result.on{animation:none}.progress i{transition:none}}
+
+.summary{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline;margin:0 4px 14px}
+.summary strong{font-size:1.15rem;font-weight:600;word-break:break-all}
+.summary span{color:var(--mute);font:400 12.5px var(--mono)}
 
 .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
-.tab{background:var(--panel);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--text);cursor:pointer;text-align:left;font-family:var(--sans)}
-.tab b{display:block;font-size:1.05rem;display:flex;align-items:center;gap:8px}
-.tab b::before{content:"";width:10px;height:10px;border-radius:3px;background:var(--c)}
-.tab small{color:var(--mute);font:400 12px var(--mono)}
-.tab[data-t=html]{--c:var(--html)} .tab[data-t=css]{--c:var(--css)} .tab[data-t=js]{--c:var(--js)}
-.tab[aria-selected=true]{border-color:var(--c);box-shadow:inset 0 -3px 0 var(--c)}
-.tab:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.tab{background:var(--panel);border:1.5px solid var(--line);border-radius:14px;padding:14px;color:var(--text);cursor:pointer;text-align:left;font-family:var(--sans);transition:background .2s,border-color .2s}
+.tab b{display:block;font-size:1.25rem;font-weight:800;letter-spacing:-.02em;color:var(--c)}
+.tab small{display:block;color:var(--mute);font:400 11.5px var(--mono);margin-top:2px}
+.tab[data-t=html]{--c:var(--c-html)} .tab[data-t=css]{--c:var(--c-css)} .tab[data-t=js]{--c:var(--c-js)}
+.tab[aria-selected=true]{background:var(--panel2);border-color:var(--c)}
 
-.files{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:4px;scrollbar-width:thin}
-.chip{flex:none;max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:transparent;border:1px solid var(--line);color:var(--mute);border-radius:999px;padding:5px 12px;font:12px var(--mono);cursor:pointer}
+.files{display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:thin}
+.chip{flex:none;max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--panel);border:1px solid var(--line);color:var(--mute);border-radius:999px;padding:6px 13px;font:400 12px var(--mono);cursor:pointer}
 .chip[aria-pressed=true]{background:var(--text);color:var(--bg);border-color:var(--text)}
-.chip:focus-visible{outline:2px solid var(--acc)}
 
-.viewer{border:1.5px solid var(--line);border-radius:12px;overflow:hidden;background:var(--code)}
+/* Viewer */
+.viewer{border:1.5px solid var(--line);border-radius:16px;overflow:hidden;background:var(--code)}
 .bar{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--panel);border-bottom:1px solid var(--line)}
-.bar .name{flex:1;min-width:0;font:12.5px var(--mono);color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.btn{background:transparent;border:1px solid var(--line);color:var(--text);border-radius:8px;padding:6px 12px;font:600 13px var(--sans);cursor:pointer}
-.btn:hover{border-color:var(--acc);color:var(--acc)}
-.btn:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.bar .name{flex:1;min-width:0;font:400 12px var(--mono);color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btn{background:transparent;border:1px solid var(--line);color:var(--text);border-radius:9px;padding:6px 12px;font:600 12.5px var(--sans);cursor:pointer;transition:border-color .2s,color .2s}
+.btn:hover,.btn[aria-pressed=true]{border-color:var(--acc);color:var(--acc)}
 
-.scroll{display:flex;max-height:70vh;overflow:auto;font:12.5px/1.65 var(--mono)}
-.gutter,.src{margin:0;padding:14px 0;white-space:pre}
-.gutter{position:sticky;left:0;flex:none;min-width:48px;padding:14px 10px 14px 12px;text-align:right;color:var(--mute);background:var(--code);border-right:1px solid var(--line);user-select:none;opacity:.8}
-.src{padding:14px 16px;tab-size:2;color:var(--text);flex:1}
-.empty{padding:36px 16px;text-align:center;color:var(--mute)}
-.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:8px 16px;border-radius:999px;font-weight:600;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s}
+.scroll{display:flex;max-height:72vh;overflow:auto;font:400 12.5px/1.7 var(--mono);-webkit-overflow-scrolling:touch}
+.gutter,.src{margin:0;white-space:pre;font:inherit}
+.gutter{position:sticky;left:0;flex:none;min-width:50px;padding:14px 10px 14px 12px;text-align:right;color:#5a5188;background:var(--code);border-right:1px solid var(--line);user-select:none}
+.src{flex:1;padding:14px 16px;tab-size:2;color:#e6e0ff}
+.scroll.wrap .src{white-space:pre-wrap;word-break:break-all}
+.scroll.wrap .gutter{display:none}
+.empty{padding:40px 16px;text-align:center;color:var(--mute);width:100%}
+
+/* Syntax */
+.t{color:var(--t-tag)} .a{color:var(--t-attr)} .s{color:var(--t-str)}
+.c{color:var(--t-com);font-style:italic} .k{color:var(--t-key)} .n{color:var(--t-num)}
+.f{color:var(--t-fn)} .p{color:var(--t-pun)}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:9px 18px;border-radius:999px;font-weight:600;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s}
 .toast.on{opacity:1}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>Bongkar Source</h1>
-  <p class="lead">Tempel link website, lihat HTML, CSS, dan JavaScript-nya dalam satu tempat.</p>
+  <p class="brand">&lt;/&gt; view-source</p>
+  <h1>Bongkar<br>Source</h1>
+  <p class="lead">Tempel link website. Lihat HTML, CSS, dan JavaScript-nya, lengkap dengan file eksternal.</p>
 
   <form id="f">
+    <span class="glyph">://</span>
     <input id="url" type="text" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="contoh.com" aria-label="Link website">
     <button id="go" type="submit">Ambil</button>
   </form>
+  <div class="progress"><i id="bar"></i></div>
   <div id="status" role="status" aria-live="polite"></div>
 
   <section id="result">
+    <div class="summary">
+      <strong id="host"></strong>
+      <span id="meta"></span>
+    </div>
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" data-t="html"><b>HTML</b><small id="s-html"></small></button>
       <button class="tab" role="tab" data-t="css"><b>CSS</b><small id="s-css"></small></button>
@@ -94,6 +116,7 @@ form button:focus-visible{outline:2px solid var(--text);outline-offset:-4px}
     <div class="viewer">
       <div class="bar">
         <span class="name" id="fname"></span>
+        <button class="btn" id="wrapbtn" aria-pressed="false">Bungkus</button>
         <button class="btn" id="copy">Salin</button>
         <button class="btn" id="dl">Unduh</button>
       </div>
@@ -104,48 +127,74 @@ form button:focus-visible{outline:2px solid var(--text);outline-offset:-4px}
 <div class="toast" id="toast"></div>
 
 <script>
-const WORKER = 'https://NAMA-WORKER.USERNAME.workers.dev';
-const $ = id => document.getElementById(id);
-let D = {html:[], css:[], js:[]}, tab = 'html', idx = 0;
+const WORKER = 'https://view-source.kenzo-proxy.workers.dev';
 
-const get = u => fetch(WORKER + '?url=' + encodeURIComponent(u)).then(r => {
+const $ = id => document.getElementById(id);
+let D = {html:[], css:[], js:[]}, tab = 'html', idx = 0, wrap = false;
+
+/* ---------- util ---------- */
+const get = u => fetch(WORKER + '/?url=' + encodeURIComponent(u)).then(r => {
   if (!r.ok) throw new Error('HTTP ' + r.status);
   return r.text();
 });
-const kb = n => n < 1024 ? n + ' B' : (n/1024).toFixed(1) + ' KB';
+const kb = n => n < 1024 ? n + ' B' : (n / 1024).toFixed(1) + ' KB';
 const total = a => a.reduce((n, f) => n + f.c.length, 0);
+const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const sp = (c, s) => '<span class="' + c + '">' + esc(s) + '</span>';
 
-function status(msg, err, busy){
-  const s = $('status');
-  s.className = err ? 'err' : '';
-  s.innerHTML = busy ? '<span class="dot"></span>' : '';
-  s.append(msg);
+function status(msg, err){ const s = $('status'); s.className = err ? 'err' : ''; s.textContent = msg; }
+function toast(t){ const e = $('toast'); e.textContent = t; e.classList.add('on'); setTimeout(() => e.classList.remove('on'), 1400); }
+function prog(p){ $('bar').style.width = p + '%'; }
+
+/* ---------- syntax highlight ---------- */
+function run(code, re, fn){
+  let out = '', last = 0, m;
+  re.lastIndex = 0;
+  while ((m = re.exec(code))) {
+    out += esc(code.slice(last, m.index)) + fn(m);
+    last = m.index + m[0].length;
+    if (!m[0].length) re.lastIndex++;
+  }
+  return out + esc(code.slice(last));
 }
-function toast(t){
-  const e = $('toast'); e.textContent = t; e.classList.add('on');
-  setTimeout(() => e.classList.remove('on'), 1400);
+const JS_RE = /(\/\*[\s\S]*?\*\/|\/\/[^\n]*)|("(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'|`(?:\\.|[^`\\])*`)|\b(const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|new|class|extends|import|export|from|default|async|await|try|catch|finally|throw|typeof|instanceof|in|of|this|null|undefined|true|false|void|delete)\b|(?<![\w$.])(\d+\.?\d*(?:e[+-]?\d+)?)\b|([A-Za-z_$][\w$]*)(?=\s*\()/g;
+const CSS_RE = /(\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*')|(@[\w-]+)|(#[0-9a-fA-F]{3,8}\b)|((?<![\w#-])-?\d*\.?\d+(?:px|em|rem|%|vh|vw|ms|s|deg|fr)?(?![\w]))|([\w-]+)(?=\s*:)|(!important)/g;
+const HTML_RE = /(<!--[\s\S]*?-->)|(<\/?[a-zA-Z][^>]*>)/g;
+const ATTR_RE = /([\w:@.-]+)(\s*=\s*)?("[^"]*"|'[^']*'|[^\s"'>]+)?/g;
+
+function hlTag(t){
+  const m = t.match(/^(<\/?)([\w:-]+)([\s\S]*?)(\/?>)$/);
+  if (!m) return esc(t);
+  const attrs = run(m[3], ATTR_RE, a => sp('a', a[1]) + esc(a[2] || '') + (a[3] ? sp('s', a[3]) : ''));
+  return sp('p', m[1]) + sp('t', m[2]) + attrs + sp('p', m[4]);
+}
+function highlight(code, lang){
+  if (code.length > 250000) return esc(code);
+  if (lang === 'js')  return run(code, JS_RE, m => m[1] ? sp('c',m[1]) : m[2] ? sp('s',m[2]) : m[3] ? sp('k',m[3]) : m[4] ? sp('n',m[4]) : sp('f',m[5]));
+  if (lang === 'css') return run(code, CSS_RE, m => m[1] ? sp('c',m[1]) : m[2] ? sp('s',m[2]) : m[3] ? sp('k',m[3]) : m[4] ? sp('n',m[4]) : m[5] ? sp('n',m[5]) : m[6] ? sp('a',m[6]) : sp('k',m[7]));
+  return run(code, HTML_RE, m => m[1] ? sp('c', m[1]) : hlTag(m[2]));
 }
 
-$('f').addEventListener('submit', async e => {
-  e.preventDefault();
-  let url = $('url').value.trim();
+/* ---------- fetch & parse ---------- */
+async function load(raw){
+  let url = raw.trim();
   if (!url) return;
   if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
-  try { new URL(url) } catch { return status('Link tidak valid.', true) }
+  try { new URL(url); } catch { return status('Link tidak valid.', true); }
 
   $('go').disabled = true;
   $('result').classList.remove('on');
-  status('Mengambil halaman...', false, true);
+  prog(8); status('Mengambil halaman...');
   try {
     const html = await get(url);
     const doc = new DOMParser().parseFromString(html, 'text/html');
-    const abs = h => { try { return new URL(h, url).href } catch { return null } };
+    const abs = h => { try { return new URL(h, url).href; } catch { return null; } };
     D = {html:[{n:'index.html', c:html}], css:[], js:[]};
 
-    doc.querySelectorAll('style').forEach((s,i) =>
-      D.css.push({n:'inline style #' + (i+1), c:s.textContent}));
-    doc.querySelectorAll('script:not([src])').forEach((s,i) =>
-      s.textContent.trim() && D.js.push({n:'inline script #' + (i+1), c:s.textContent}));
+    doc.querySelectorAll('style').forEach((s, i) =>
+      D.css.push({n:'inline style #' + (i + 1), c:s.textContent}));
+    doc.querySelectorAll('script:not([src])').forEach((s, i) =>
+      s.textContent.trim() && D.js.push({n:'inline script #' + (i + 1), c:s.textContent}));
 
     const jobs = [];
     doc.querySelectorAll('link[rel~=stylesheet][href]').forEach(l => {
@@ -156,25 +205,36 @@ $('f').addEventListener('submit', async e => {
     });
 
     let done = 0;
+    prog(20);
     await Promise.all(jobs.map(async ([list, u]) => {
-      try { list.push({n:u, c:await get(u)}) }
-      catch { list.push({n:u, c:'/* gagal diambil */'}) }
-      status('Mengambil file ' + (++done) + '/' + jobs.length + '...', false, true);
+      try { list.push({n:u, c:await get(u)}); }
+      catch { list.push({n:u, c:'/* gagal diambil */'}); }
+      done++;
+      status('Mengambil file ' + done + '/' + jobs.length + '...');
+      prog(20 + 75 * done / jobs.length);
     }));
 
     ['html','css','js'].forEach(t => {
       $('s-' + t).textContent = D[t].length + ' file · ' + kb(total(D[t]));
     });
-    status('Selesai · ' + new URL(url).hostname);
+    const u = new URL(url);
+    $('host').textContent = u.hostname;
+    $('meta').textContent = (doc.title ? doc.title + ' · ' : '') + kb(total(D.html) + total(D.css) + total(D.js)) + ' total';
+    prog(100); status('');
     $('result').classList.add('on');
     select('html');
+    setTimeout(() => prog(0), 500);
   } catch (err) {
-    status('Gagal: ' + err.message + '. Cek link atau URL Worker.', true);
+    prog(0);
+    status('Gagal: ' + err.message + '. Cek link atau coba lagi.', true);
   } finally {
     $('go').disabled = false;
   }
-});
+}
 
+$('f').addEventListener('submit', e => { e.preventDefault(); load($('url').value); });
+
+/* ---------- UI ---------- */
 document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => select(b.dataset.t)));
 
 function select(t){
@@ -184,7 +244,8 @@ function select(t){
   if (D[t].length > 1) {
     D[t].forEach((f, i) => {
       const c = document.createElement('button');
-      c.className = 'chip'; c.textContent = f.n.replace(/^https?:\/\//, '');
+      c.className = 'chip';
+      c.textContent = f.n.replace(/^https?:\/\//, '');
       c.title = f.n;
       c.onclick = () => { idx = i; render(); };
       box.append(c);
@@ -197,20 +258,26 @@ function render(){
   document.querySelectorAll('.chip').forEach((c, i) => c.setAttribute('aria-pressed', i === idx));
   const f = D[tab][idx], sc = $('scroll');
   sc.innerHTML = '';
+  sc.classList.toggle('wrap', wrap);
   if (!f) {
     $('fname').textContent = '';
     sc.innerHTML = '<div class="empty">Tidak ada file ' + tab.toUpperCase() + ' di halaman ini.</div>';
     return;
   }
-  $('fname').textContent = f.n + ' · ' + kb(f.c.length);
-  const lines = f.c.split('\n');
+  $('fname').textContent = f.n.replace(/^https?:\/\//, '') + ' · ' + kb(f.c.length);
+  const lines = f.c.split('\n').length;
   const g = document.createElement('pre'); g.className = 'gutter';
-  g.textContent = lines.map((_, i) => i + 1).join('\n');
+  g.textContent = Array.from({length: lines}, (_, i) => i + 1).join('\n');
   const s = document.createElement('pre'); s.className = 'src';
-  s.textContent = f.c;
+  s.innerHTML = highlight(f.c, tab);
   sc.append(g, s);
 }
 
+$('wrapbtn').onclick = e => {
+  wrap = !wrap;
+  e.currentTarget.setAttribute('aria-pressed', wrap);
+  render();
+};
 $('copy').onclick = async () => {
   const f = D[tab][idx]; if (!f) return;
   try { await navigator.clipboard.writeText(f.c); toast('Tersalin'); }
@@ -222,8 +289,13 @@ $('dl').onclick = () => {
   if (!/\.\w+$/.test(name)) name += '.' + tab;
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([f.c], {type:'text/plain'}));
-  a.download = name; a.click(); URL.revokeObjectURL(a.href);
+  a.download = name; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 };
+
+/* buka langsung lewat ?url=contoh.com */
+const q = new URLSearchParams(location.search).get('url');
+if (q) { $('url').value = q; load(q); }
 </script>
 </body>
 </html>
